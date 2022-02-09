@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Quiz</string>
+    <string name="connexionBtn">Connexion</string>
+    <string name="mdp">Password</string>
+    <string name="username">Username</string>
+    <string name="settings">Parameters</string>
+    <string name="share">Share</string>
+    <string name="truebtn">True</string>
+    <string name="falsebtn">False</string>
+    <string name="previous">&lt; Previous</string>
+    <string name="next">Next &gt;</string>
+    <string name="best">Record:</string>
+    <string name="current">Current Score:</string>
+</resources>
