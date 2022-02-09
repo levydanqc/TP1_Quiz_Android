@@ -12,4 +12,5 @@
     <string name="next">Next &gt;</string>
     <string name="best">Record:</string>
     <string name="current">Current Score:</string>
+    <string name="finish">Finished!</string>
 </resources>

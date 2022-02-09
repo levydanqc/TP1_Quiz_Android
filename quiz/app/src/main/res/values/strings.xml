@@ -11,4 +11,5 @@
     <string name="next">Suivant &gt;</string>
     <string name="best">Record:</string>
     <string name="current">Score actuel:</string>
+    <string name="finish">Terminé !</string>
 </resources>
