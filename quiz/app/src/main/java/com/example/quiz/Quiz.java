@@ -33,7 +33,8 @@ public class Quiz extends AppCompatActivity implements View.OnClickListener {
     Button btnPrevious;
     Button btnNext;
 
-    String[] questions = new String[]{"Question 1", "Question 2", "Question 3", "Question 4", "Question 5"};
+    String[] questions = new String[]{"La terre est plate.", "Elon Musk est un réptilien.",
+            "JFK n'a pas été assiné par la CIA.", "Michael Jackson est mort.", "L'amant de Marilyn Monroe était Winston Churchill."};
     boolean[] reponses = new boolean[]{true, false, false, true, true};
     boolean[] answered = new boolean[]{false, false, false, false, false};
 
