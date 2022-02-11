@@ -21,6 +21,7 @@ public class MainActivity extends AppCompatActivity {
         btnLogin.setOnClickListener(v -> {
             if (edUsername.getText().toString().equals("cegep") && edPwd.getText().toString().equals("123")) {
                 Intent i = new Intent(v.getContext(), Quiz.class);
+                i.putExtra("username", "cegep");
                 startActivity(i);
             }
         });

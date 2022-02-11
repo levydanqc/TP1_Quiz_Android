@@ -13,4 +13,7 @@
     <string name="best">Record:</string>
     <string name="current">Current Score:</string>
     <string name="finish">Finished!</string>
+    <string name="save">Save</string>
+    <string name="goodAnswer">Good answer!</string>
+    <string name="wrongAnswer">Wrong answer...</string>
 </resources>

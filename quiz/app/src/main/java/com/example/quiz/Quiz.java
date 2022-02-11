@@ -7,16 +7,22 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 public class Quiz extends AppCompatActivity implements View.OnClickListener {
+    int REQUEST_CODE = 420;
 
     int index = 0;
     int currentScore = 0;
     int bestScore;
+    String username;
+
     TextView tvQuestion;
     TextView tvBestScore;
     TextView tvCurrentScore;
@@ -28,23 +34,23 @@ public class Quiz extends AppCompatActivity implements View.OnClickListener {
     Button btnNext;
 
     String[] questions = new String[]{"Question 1", "Question 2", "Question 3", "Question 4", "Question 5"};
-    Boolean[] reponses = new Boolean[]{true, false, false, true, true};
-    Boolean[] answered = new Boolean[]{false, false, false, false, false};
+    boolean[] reponses = new boolean[]{true, false, false, true, true};
+    boolean[] answered = new boolean[]{false, false, false, false, false};
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_quiz);
 
+        username = getIntent().getStringExtra("username");
+
+        if (savedInstanceState != null)
+            onRestoreInstanceState(savedInstanceState);
+
         createComponents();
         manageButtons();
         createView();
-    }
 
-    @Override
-    protected void onStop() {
-        writeBestScore();
-        super.onStop();
     }
 
     void readBestScore() {
@@ -81,6 +87,7 @@ public class Quiz extends AppCompatActivity implements View.OnClickListener {
             btnPrevious.setEnabled(true);
         }
 
+        getSupportActionBar().setTitle(username.equals("") ? "Quiz" : username);
 
         tvCurrentScore.setText(String.valueOf(currentScore));
         readBestScore();
@@ -112,13 +119,16 @@ public class Quiz extends AppCompatActivity implements View.OnClickListener {
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.btn_settings:
+                Intent settings = new Intent(this, Settings.class);
+                settings.putExtra("username", username);
+                startActivityForResult(settings, REQUEST_CODE);
                 break;
             case R.id.btn_share:
-                Intent intent = new Intent(Intent.ACTION_SEND);
-                intent.setType("text/plain");
-                intent.putExtra(Intent.EXTRA_TEXT, "Hey! Viens me battre à 'Quiz, by Dan Lévy'." +
+                Intent share = new Intent(Intent.ACTION_SEND);
+                share.setType("text/plain");
+                share.putExtra(Intent.EXTRA_TEXT, "Hey! Viens me battre à 'Quiz, by Dan Lévy'." +
                         "Mon score actuelle est: " + currentScore + ". Et mon record est: " + bestScore);
-                startActivity(Intent.createChooser(intent, ""));
+                startActivity(Intent.createChooser(share, ""));
                 break;
             case R.id.btn_true:
                 checkAnswer(true);
@@ -137,12 +147,40 @@ public class Quiz extends AppCompatActivity implements View.OnClickListener {
 
     void checkAnswer(boolean value) {
         // Vérification de la réponse de l'utilisateur.
-        if (reponses[index].equals(value))
+        if (reponses[index] == value) {
             currentScore += 1;
-        else
+            Toast.makeText(getApplicationContext(), R.string.goodAnswer, Toast.LENGTH_SHORT).show();
+        } else {
             currentScore -= currentScore > 0 ? 1 : 0;
+            Toast.makeText(getApplicationContext(), R.string.wrongAnswer, Toast.LENGTH_SHORT).show();
+        }
         answered[index] = true;
+
+        if (currentScore > bestScore)
+            bestScore = currentScore;
+        writeBestScore();
+
         moveQuestion(index < 4 ? 1 : 0);
+    }
+
+    @Override
+    protected void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
+
+        outState.putInt("currentScore", currentScore);
+        outState.putInt("index", index);
+        outState.putString("username", username);
+        outState.putBooleanArray("answered", answered);
+    }
+
+    @Override
+    protected void onRestoreInstanceState(@NonNull Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+
+        currentScore = savedInstanceState.getInt("currentScore");
+        index = savedInstanceState.getInt("index");
+        username = savedInstanceState.getString("username");
+        answered = savedInstanceState.getBooleanArray("answered");
     }
 
     void moveQuestion(int moving) {
@@ -151,5 +189,15 @@ public class Quiz extends AppCompatActivity implements View.OnClickListener {
             index += moving;
         }
         createView();
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        // Update le username après la modification
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == REQUEST_CODE && resultCode == RESULT_OK) {
+            username = data.getStringExtra("username");
+            createView();
+        }
     }
 }
